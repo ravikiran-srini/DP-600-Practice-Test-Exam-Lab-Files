@@ -1,0 +1,73 @@
+CREATE TABLE Appointments (
+    AppointmentID INT,
+    DoctorID INT,
+    StartTime DATETIME2(6),
+    AppointmentType VARCHAR(50),
+    ActualDuration INT
+);
+
+--Insert data into the table
+DECLARE @counter INT = 1;
+WHILE @counter <= 30
+BEGIN
+    INSERT INTO Appointments (AppointmentID, DoctorID, StartTime, AppointmentType, ActualDuration)
+    VALUES 
+    (@counter, 500 + @counter, '2025-06-01 10:00:00', 'In-Person', 30 + @counter),
+    (@counter + 100, 500 + @counter, '2025-06-01 10:00:00', 'Telehealth', 99); 
+    
+    SET @counter = @counter + 1;
+END;
+
+-- 3. Generate 150+ "Normal" Rows (No duplicates)
+-- This ensures we have > 200 rows in the table
+DECLARE @normal_counter INT = 1;
+WHILE @normal_counter <= 150
+BEGIN
+    INSERT INTO Appointments (AppointmentID, DoctorID, StartTime, AppointmentType, ActualDuration)
+    VALUES 
+    (@normal_counter + 300, 1000 + @normal_counter, DATEADD(HOUR, @normal_counter, '2025-01-01 08:00:00'), 'In-Person', 30);
+    
+    SET @normal_counter = @normal_counter + 1;
+END;
+
+
+
+--Option A
+SELECT TOP 10 DoctorID, StartTime,
+SUM(CASE WHEN AppointmentType = 'Telehealth' THEN 15 ELSE ActualDuration END) AS AdjDuration
+FROM Appointments
+WHERE YEAR(StartTime) = 2025
+GROUP BY DoctorID, StartTime
+HAVING COUNT(*) > 1
+ORDER BY AdjDuration DESC;
+
+--Option B
+SELECT TOP 10 DoctorID, StartTime,
+SUM(CASE WHEN AppointmentType = 'Telehealth' THEN 15 ELSE ActualDuration END) AS AdjDuration
+FROM Appointments
+WHERE YEAR(StartTime) = 2025 
+AND COUNT(*) > 1
+GROUP BY DoctorID, StartTime
+ORDER BY AdjDuration DESC;
+
+--Option C
+SELECT TOP 10 DoctorID, StartTime,
+SUM(CASE WHEN AppointmentType = 'Telehealth' THEN 15 ELSE ActualDuration END) AS AdjDuration
+FROM Appointments
+GROUP BY DoctorID, StartTime
+HAVING YEAR(StartTime) = 2025
+AND COUNT(*) > 1
+ORDER BY AdjDuration DESC;
+
+--Option D
+SELECT TOP 10 DoctorID, StartTime,
+SUM(CASE WHEN AppointmentType = 'Telehealth' THEN 15 ELSE ActualDuration END) AS AdjDuration
+FROM Appointments
+WHERE YEAR(StartTime) = 2025
+GROUP BY DoctorID
+HAVING COUNT(*) > 1
+ORDER BY AdjDuration DESC;
+
+
+
+
