@@ -1,0 +1,24 @@
+CREATE TABLE [dbo].[Production_Sales] (
+    [SaleID] INT,
+    [Product] VARCHAR(50),
+    [SaleDate] DATE
+);
+
+INSERT INTO [dbo].[Production_Sales] ([SaleID], [Product], [SaleDate])
+VALUES 
+    (1, 'Laptop', '2026-05-01'),
+    (2, 'Mouse', '2026-05-02'),
+    (3, 'Monitor', '2026-05-03');
+
+
+CREATE TABLE [dbo].[Test_Sales_Clone]
+AS CLONE OF [dbo].[Production_Sales];
+
+SELECT * FROM [dbo].[Test_Sales_Clone];
+
+
+
+UPDATE [dbo].[Production_Sales] 
+SET Product = 'LCD Monitor' WHERE [SaleID] = 3;
+
+SELECT * FROM [dbo].[Production_Sales];
