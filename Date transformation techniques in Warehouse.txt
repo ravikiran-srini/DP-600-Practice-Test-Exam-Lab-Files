@@ -1,0 +1,42 @@
+-- Create the Purchases Table
+CREATE TABLE Purchases (
+    PurchaseID INT,
+    PurchaseDate DATETIME2(6)
+);
+
+-- Insert Sample Data
+INSERT INTO Purchases (PurchaseID, PurchaseDate)
+VALUES 
+    (1, '2024-01-15 14:30:00'),
+    (2, '2024-02-20 09:15:00'), 
+    (3, '2024-12-25 23:59:59'), 
+    (4, '2025-05-05 12:00:00');
+
+
+SELECT * FROM Purchases
+
+
+SELECT 
+    PurchaseDate AS OriginalDateTime,
+    FORMAT(PurchaseDate, 'MMM dd, yy') AS FormattedDate
+FROM Purchases;
+
+
+SELECT
+    PurchaseDate AS OriginalDateTime,
+    CONVERT(VARCHAR, PurchaseDate, 107) AS FormattedDate
+FROM Purchases;
+
+
+SELECT 
+    PurchaseDate AS OriginalDateTime,
+    FORMAT(PurchaseDate, 'MMM dd, yy') AS FormattedDate,
+    DATETRUNC(month, PurchaseDate) AS MonthStart
+FROM Purchases;
+
+
+SELECT 
+    PurchaseDate AS OriginalDateTime,
+    FORMAT(PurchaseDate, 'MMM dd, yy') AS FormattedDate,
+    EOMONTH(PurchaseDate, -1) AS MonthStart
+FROM Purchases;
